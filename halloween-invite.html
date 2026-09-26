@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Welcome to the Darkness — Halloween Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0908;
+      --envelope: #12100e;
+      --copper: #b87333;
+      --copper-light: #d4a017;
+      --blood: #8b0000;
+      --blood-bright: #c41e3a;
+      --cream: #f5e6c8;
+      --seal: #e85d04;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100dvh;
+      background: #0f0d0b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+
+    .stage {
+      width: 100%;
+      max-width: 390px;
+      position: relative;
+      perspective: 1400px;
+    }
+
+    /* ========== ENVELOPE ========== */
+    .envelope {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      cursor: pointer;
+      transform-style: preserve-3d;
+    }
+
+    .envelope-body {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(60,45,30,0.45) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(40,30,20,0.5) 0%, transparent 50%),
+        linear-gradient(165deg, #1a1612 0%, #0d0b09 40%, #15120f 100%);
+      border-radius: 6px;
+      box-shadow: 
+        0 25px 60px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(184,115,51,0.18),
+        inset 0 0 80px rgba(0,0,0,0.5);
+      overflow: hidden;
+      transition: box-shadow 0.8s ease, transform 0.6s ease;
+    }
+
+    .envelope:not(.opened):hover .envelope-body {
+      transform: scale(1.015);
+      box-shadow: 
+        0 30px 70px rgba(0,0,0,0.8),
+        0 0 30px rgba(232,93,4,0.15),
+        0 0 0 1px rgba(184,115,51,0.25),
+        inset 0 0 80px rgba(0,0,0,0.5);
+    }
+
+    /* Texture */
+    .envelope-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Top flap */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 42%;
+      background: 
+        linear-gradient(180deg, #1f1b16 0%, #14110e 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      z-index: 10;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .flap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(184,115,51,0.08) 0%, transparent 60%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    .envelope.opened .flap {
+      transform: rotateX(-180deg);
+    }
+
+    /* Side flaps (subtle) */
+    .side-flap {
+      position: absolute;
+      top: 28%;
+      width: 50%;
+      height: 45%;
+      background: linear-gradient(90deg, #16130f, #1a1612);
+      z-index: 5;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.9;
+    }
+
+    .side-flap.left {
+      left: 0;
+      clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 100%);
+      transform-origin: left center;
+    }
+
+    .side-flap.right {
+      right: 0;
+      clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 100%);
+      transform-origin: right center;
+    }
+
+    .envelope.opened .side-flap.left {
+      transform: rotateY(-25deg);
+    }
+
+    .envelope.opened .side-flap.right {
+      transform: rotateY(25deg);
+    }
+
+    /* Flourishes */
+    .flourish {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      opacity: 0.7;
+      z-index: 3;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+
+    .flourish svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: var(--copper);
+      stroke-width: 1.2;
+    }
+
+    .flourish.tl { top: 10px; left: 10px; }
+    .flourish.tr { top: 10px; right: 10px; transform: scaleX(-1); }
+    .flourish.bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+    .flourish.br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+    .envelope.opened .flourish {
+      opacity: 0.25;
+    }
+
+    /* Bat */
+    .bat {
+      position: absolute;
+      top: 52px;
+      left: 36px;
+      width: 40px;
+      height: 20px;
+      z-index: 4;
+      opacity: 0.85;
+      transition: opacity 0.5s ease;
+    }
+
+    .envelope.opened .bat {
+      opacity: 0.2;
+    }
+
+    /* Spider */
+    .spider-thread {
+      position: absolute;
+      top: 14px;
+      right: 58px;
+      width: 1px;
+      height: 26px;
+      background: linear-gradient(to bottom, transparent, rgba(184,115,51,0.35));
+      z-index: 3;
+    }
+
+    .spider {
+      position: absolute;
+      top: 38px;
+      right: 50px;
+      width: 16px;
+      height: 26px;
+      z-index: 4;
+      opacity: 0.8;
+      transition: opacity 0.5s ease;
+    }
+
+    .envelope.opened .spider,
+    .envelope.opened .spider-thread {
+      opacity: 0.15;
+    }
+
+    /* Stars */
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--copper);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--copper-light);
+      z-index: 3;
+      opacity: 0.55;
+      transition: opacity 0.5s ease;
+    }
+
+    .envelope.opened .star {
+      opacity: 0.15;
+    }
+
+    /* Title on envelope */
+    .title {
+      position: absolute;
+      top: 17%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 12;
+      font-family: 'Cinzel', serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.26em;
+      color: var(--blood-bright);
+      text-shadow: 0 0 14px rgba(196,30,58,0.45);
+      transition: opacity 0.5s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .envelope.opened .title {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    /* Wax Seal */
+    .seal {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 96px;
+      height: 96px;
+      z-index: 15;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.65));
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, filter 0.6s ease;
+    }
+
+    .envelope:not(.opened):hover .seal {
+      transform: translate(-50%, -50%) scale(1.06);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.65)) drop-shadow(0 0 18px rgba(232,93,4,0.45));
+    }
+
+    .envelope.opened .seal {
+      transform: translate(-50%, -50%) scale(0.3) translateY(-80px);
+      opacity: 0;
+    }
+
+    .seal-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 35% 30%, #ff9f4a 0%, #e85d04 35%, #c2410c 70%, #9a3412 100%);
+      box-shadow: 
+        inset 0 -4px 12px rgba(0,0,0,0.4),
+        inset 0 3px 8px rgba(255,200,100,0.3),
+        0 0 0 3px rgba(184,115,51,0.35),
+        0 0 20px rgba(232,93,4,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: sealGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes sealGlow {
+      0%, 100% { box-shadow: inset 0 -4px 12px rgba(0,0,0,0.4), inset 0 3px 8px rgba(255,200,100,0.3), 0 0 0 3px rgba(184,115,51,0.35), 0 0 18px rgba(232,93,4,0.25); }
+      50% { box-shadow: inset 0 -4px 12px rgba(0,0,0,0.4), inset 0 3px 8px rgba(255,200,100,0.35), 0 0 0 3px rgba(184,115,51,0.45), 0 0 28px rgba(232,93,4,0.4); }
+    }
+
+    .seal-circle::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,180,80,0.35);
+    }
+
+    .pumpkin {
+      width: 54px;
+      height: 48px;
+    }
+
+    /* Tap to open */
+    .tap {
+      position: absolute;
+      bottom: 11%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 12;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      color: var(--blood-bright);
+      opacity: 0.9;
+      animation: pulse 2.2s ease-in-out infinite;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .envelope.opened .tap {
+      opacity: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.65; }
+      50% { opacity: 1; }
+    }
+
+    /* ========== OPENED CARD ========== */
+    .card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(50,35,20,0.55) 0%, transparent 55%),
+        linear-gradient(180deg, #1c1814 0%, #100e0c 100%);
+      border-radius: 8px;
+      box-shadow: 
+        0 30px 70px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(184,115,51,0.2);
+      opacity: 0;
+      transform: scale(0.88) translateY(50px);
+      pointer-events: none;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s,
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s,
+                  box-shadow 0.8s ease 0.4s;
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+      box-shadow: 
+        0 30px 70px rgba(0,0,0,0.85),
+        0 0 40px rgba(232,93,4,0.12),
+        0 0 80px rgba(196,30,58,0.08),
+        0 0 0 1px rgba(184,115,51,0.25);
+    }
+
+    .card-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 38px 28px 28px;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .card-border {
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(184,115,51,0.28);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .card-border::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(184,115,51,0.12);
+      border-radius: 2px;
+    }
+
+    .card-bat {
+      width: 36px;
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    .card-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      color: var(--copper);
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.2;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 0 30px rgba(232,93,4,0.15);
+    }
+
+    .card-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--copper-light);
+      margin-bottom: 22px;
+      opacity: 0.9;
+    }
+
+    .divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--copper), transparent);
+      margin: 0 auto 22px;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 8px;
+      color: var(--copper);
+    }
+
+    .divider::before { left: -14px; }
+    .divider::after { right: -14px; }
+
+    .detail {
+      margin-bottom: 16px;
+    }
+
+    .detail-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      color: var(--copper);
+      margin-bottom: 3px;
+      opacity: 0.8;
+    }
+
+    .detail-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      color: var(--cream);
+      line-height: 1.35;
+    }
+
+    .detail-value.large {
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 18px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--blood-bright);
+      opacity: 0.9;
+      text-shadow: 0 0 12px rgba(196,30,58,0.35);
+    }
+
+    .card-footer span {
+      display: block;
+      margin-top: 4px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: var(--cream);
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(184,115,51,0.4);
+      border-radius: 50%;
+      background: rgba(0,0,0,0.45);
+      color: var(--copper);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      background: rgba(184,115,51,0.25);
+      border-color: var(--copper);
+      box-shadow: 0 0 12px rgba(184,115,51,0.3);
+    }
+
+    /* Glow overlay when open */
+    .glow-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(232,93,4,0.08) 0%, transparent 60%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 1s ease 0.5s;
+    }
+
+    .card.visible .glow-overlay {
+      opacity: 1;
+    }
+
+    @media (max-width: 400px) {
+      body { padding: 0; }
+      .stage { max-width: 100%; }
+      .envelope-body, .card { border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <!-- ENVELOPE -->
+    <div class="envelope" id="envelope" onclick="openInvite()">
+      <div class="envelope-body">
+        <!-- Side flaps -->
+        <div class="side-flap left"></div>
+        <div class="side-flap right"></div>
+
+        <!-- Flourishes -->
+        <div class="flourish tl">
+          <svg viewBox="0 0 100 100">
+            <path d="M10,10 Q30,10 30,30 Q30,10 50,10 Q30,10 30,30 Q10,30 10,10" />
+            <path d="M15,15 Q25,15 25,25" />
+            <path d="M10,40 Q20,35 25,45" />
+            <path d="M40,10 Q35,20 45,25" />
+            <circle cx="18" cy="18" r="1.5" fill="#b87333"/>
+          </svg>
+        </div>
+        <div class="flourish tr">
+          <svg viewBox="0 0 100 100">
+            <path d="M10,10 Q30,10 30,30 Q30,10 50,10 Q30,10 30,30 Q10,30 10,10" />
+            <path d="M15,15 Q25,15 25,25" />
+            <path d="M10,40 Q20,35 25,45" />
+            <path d="M40,10 Q35,20 45,25" />
+            <circle cx="18" cy="18" r="1.5" fill="#b87333"/>
+          </svg>
+        </div>
+        <div class="flourish bl">
+          <svg viewBox="0 0 100 100">
+            <path d="M10,10 Q30,10 30,30 Q30,10 50,10 Q30,10 30,30 Q10,30 10,10" />
+            <path d="M15,15 Q25,15 25,25" />
+            <path d="M10,40 Q20,35 25,45" />
+            <path d="M40,10 Q35,20 45,25" />
+            <circle cx="18" cy="18" r="1.5" fill="#b87333"/>
+          </svg>
+        </div>
+        <div class="flourish br">
+          <svg viewBox="0 0 100 100">
+            <path d="M10,10 Q30,10 30,30 Q30,10 50,10 Q30,10 30,30 Q10,30 10,10" />
+            <path d="M15,15 Q25,15 25,25" />
+            <path d="M10,40 Q20,35 25,45" />
+            <path d="M40,10 Q35,20 45,25" />
+            <circle cx="18" cy="18" r="1.5" fill="#b87333"/>
+          </svg>
+        </div>
+
+        <!-- Bat -->
+        <svg class="bat" viewBox="0 0 64 32" fill="#1a1a1a">
+          <path d="M32 18c-2-4-6-8-12-10 2 4 2 8 0 12 4-2 8-2 12 0 4-2 8-2 12 0-2-4-2-8 0-12-6 2-10 6-12 10z"/>
+          <path d="M8 14c4-2 8 0 10 4-6 0-10 2-12 6 0-4 0-8 2-10z"/>
+          <path d="M56 14c-4-2-8 0-10 4 6 0 10 2 12 6 0-4 0-8-2-10z"/>
+          <circle cx="28" cy="16" r="1.5" fill="#c41e3a"/>
+          <circle cx="36" cy="16" r="1.5" fill="#c41e3a"/>
+        </svg>
+
+        <!-- Spider -->
+        <div class="spider-thread"></div>
+        <svg class="spider" viewBox="0 0 24 36" fill="#1a1a1a">
+          <ellipse cx="12" cy="14" rx="5" ry="6"/>
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M7 12 Q2 8 1 4" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <path d="M7 15 Q1 14 0 18" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <path d="M7 18 Q2 22 1 28" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <path d="M17 12 Q22 8 23 4" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <path d="M17 15 Q23 14 24 18" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <path d="M17 18 Q22 22 23 28" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          <circle cx="10.5" cy="7" r="0.8" fill="#c41e3a"/>
+          <circle cx="13.5" cy="7" r="0.8" fill="#c41e3a"/>
+        </svg>
+
+        <!-- Stars -->
+        <div class="star" style="top:22%; left:22%;"></div>
+        <div class="star" style="top:26%; right:24%; width:3px; height:3px;"></div>
+        <div class="star" style="top:62%; left:18%; width:3px; height:3px;"></div>
+        <div class="star" style="top:70%; right:20%;"></div>
+        <div class="star" style="top:38%; left:12%; width:2px; height:2px; opacity:0.4;"></div>
+        <div class="star" style="top:55%; right:14%; width:2px; height:2px; opacity:0.4;"></div>
+      </div>
+
+      <!-- Top flap (on top of body) -->
+      <div class="flap"></div>
+
+      <!-- Title -->
+      <div class="title">WELCOME TO THE DARKNESS</div>
+
+      <!-- Wax Seal -->
+      <div class="seal">
+        <div class="seal-circle">
+          <svg class="pumpkin" viewBox="0 0 64 56" fill="none">
+            <path d="M30 6 Q32 0 36 4 Q34 8 32 10" stroke="#2d5a1b" stroke-width="2.5" fill="none"/>
+            <ellipse cx="32" cy="32" rx="26" ry="22" fill="#1a1a1a"/>
+            <ellipse cx="32" cy="32" rx="22" ry="20" fill="#1a1a1a"/>
+            <path d="M20 18 Q22 32 20 46" stroke="#333" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <path d="M44 18 Q42 32 44 46" stroke="#333" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <path d="M32 12 Q32 32 32 52" stroke="#333" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <polygon points="22,24 28,24 25,30" fill="#e85d04"/>
+            <polygon points="36,24 42,24 39,30" fill="#e85d04"/>
+            <path d="M22 38 Q26 44 32 42 Q38 44 42 38 Q38 40 32 39 Q26 40 22 38" fill="#e85d04"/>
+            <polygon points="30,32 34,32 32,36" fill="#e85d04"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Tap prompt -->
+      <div class="tap">TAP TO OPEN</div>
+    </div>
+
+    <!-- OPENED CARD -->
+    <div class="card" id="card">
+      <div class="glow-overlay"></div>
+      <div class="card-border"></div>
+      <button class="close-btn" onclick="closeInvite()" aria-label="Close">×</button>
+
+      <div class="card-inner">
+        <svg class="card-bat" viewBox="0 0 64 32" fill="#b87333" opacity="0.7">
+          <path d="M32 18c-2-4-6-8-12-10 2 4 2 8 0 12 4-2 8-2 12 0 4-2 8-2 12 0-2-4-2-8 0-12-6 2-10 6-12 10z"/>
+          <path d="M8 14c4-2 8 0 10 4-6 0-10 2-12 6 0-4 0-8 2-10z"/>
+          <path d="M56 14c-4-2-8 0-10 4 6 0 10 2 12 6 0-4 0-8-2-10z"/>
+        </svg>
+
+        <div class="card-eyebrow">YOU ARE CORDIALLY INVITED</div>
+        <h1 class="card-title">Halloween<br>Night 2026</h1>
+        <p class="card-subtitle">A gathering of the living… and the rest</p>
+
+        <div class="divider"></div>
+
+        <div class="detail">
+          <div class="detail-label">HOSTED BY</div>
+          <div class="detail-value large">The Nightcrawlers</div>
+        </div>
+
+        <div class="detail">
+          <div class="detail-label">DATE</div>
+          <div class="detail-value">Friday, the 31st of October</div>
+        </div>
+
+        <div class="detail">
+          <div class="detail-label">TIME</div>
+          <div class="detail-value">8:00 PM until the witching hour</div>
+        </div>
+
+        <div class="detail">
+          <div class="detail-label">LOCATION</div>
+          <div class="detail-value">13 Ravenwood Lane<br>Black Hollow</div>
+        </div>
+
+        <div class="detail">
+          <div class="detail-label">DRESS CODE</div>
+          <div class="detail-value">Costumes required — the darker, the better</div>
+        </div>
+
+        <div class="card-footer">
+          RSVP by October 20th
+          <span>Come if you dare</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const card = document.getElementById('card');
+
+    function openInvite() {
+      if (envelope.classList.contains('opened')) return;
+      envelope.classList.add('opened');
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 280);
+    }
+
+    function closeInvite() {
+      card.classList.remove('visible');
+      setTimeout(() => {
+        envelope.classList.remove('opened');
+      }, 450);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && card.classList.contains('visible')) {
+        closeInvite();
+      }
+    });
+  </script>
+</body>
+</html>
